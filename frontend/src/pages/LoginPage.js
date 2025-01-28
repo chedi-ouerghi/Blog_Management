@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 
 const Container = styled.div`
   display: flex;
@@ -31,13 +32,19 @@ const Title = styled.h2`
   margin-bottom: 1.5rem;
 `;
 
-// donne moi le css du cette from
 const Form = styled.form`
-display: flex;
-flex-direction: column;
-align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
+const InputWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+`;
 
 const Input = styled.input`
   padding: 0.75rem;
@@ -55,6 +62,16 @@ const Input = styled.input`
   }
 `;
 
+const ToggleButton = styled.span`
+  position: absolute;
+  top: 40%;
+  right: 0;
+  transform: translateY(-50%);
+  font-size: 1.25rem;
+  cursor: pointer;
+  user-select: none;
+`;
+
 const Button = styled.button`
   padding: 0.75rem;
   background-color: ${({ theme }) => theme.background};
@@ -67,7 +84,8 @@ const Button = styled.button`
   transition: all 0.3s ease;
 
   &:hover {
-    background-color: #6a11cb;
+    background-color:rgb(20, 42, 129);
+    color:#fff;
   }
 
   &:disabled {
@@ -76,26 +94,26 @@ const Button = styled.button`
   }
 `;
 
-
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { error, loading } = useSelector((state) => state.auth);
 
   const validateForm = () => {
     if (!email) {
-      toast.error('Veuillez entrer votre email.');
+      toast.error('Please enter your email.');
       return false;
     }
     if (!password) {
-      toast.error('Veuillez entrer votre mot de passe.');
+      toast.error('Please enter your password.');
       return false;
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      toast.error('Veuillez entrer un email valide.');
+      toast.error('Please enter a valid email address.');
       return false;
     }
     return true;
@@ -115,17 +133,16 @@ const LoginPage = () => {
           navigate('/');
         }
       } else {
-        toast.error('Échec de la connexion. Vérifiez vos identifiants.');
+        toast.error('Login failed. Please check your credentials.');
       }
     });
   };
-
 
   return (
     <Container>
       <ToastContainer position="top-right" autoClose={3000} />
       <FormContainer>
-        <Title>Connexion</Title>
+        <Title>Login</Title>
         <Form onSubmit={handleSubmit}>
           <Input
             type="email"
@@ -133,20 +150,24 @@ const LoginPage = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-          <Input
-            type="password"
-            placeholder="Mot de passe"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <InputWrapper>
+            <Input
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <ToggleButton onClick={() => setShowPassword(!showPassword)}>
+              {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
+            </ToggleButton>
+          </InputWrapper>
           <Button type="submit" disabled={loading}>
-            {loading ? 'Chargement...' : 'Se connecter'}
+            {loading ? 'Loading...' : 'Submit'}
           </Button>
         </Form>
       </FormContainer>
     </Container>
   );
 };
-
 
 export default LoginPage;

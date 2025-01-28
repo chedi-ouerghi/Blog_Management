@@ -32,7 +32,7 @@ exports.createBlog = [
 
       
       res.status(201).json({
-        message: 'Votre blog a été créé avec succès et est en attente d\'approbation de l\'administrateur.',
+        message: 'Blog created successfully and is pending administrator approval.bk',
         blog,  
       });
     } catch (error) {

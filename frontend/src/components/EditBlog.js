@@ -239,10 +239,12 @@ const EditBlog = () => {
         <div>
           <Label>Content</Label>
           <Textarea
+            hidden
             placeholder="Enter the content here"
             value={content}
             onChange={(e) => setContent(e.target.value)}
           />
+          <p>Edit the content in the text area above to update the blog post details.</p>
         </div>
 
         <div>

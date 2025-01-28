@@ -46,7 +46,7 @@ const SectionTitle = styled.h4`
     font-size: 18px;
     font-weight: bold;
     margin-bottom: 24px;
-    color: #1f2937;
+  color: ${({ theme }) => theme.text};
     cursor: pointer;
     position: relative;
     display: flex
@@ -151,22 +151,73 @@ bottom:0%;
 `;
 const NoBlogsMessage = styled.p`
   text-align: center;
-  background-color: #fef3c7;
+  background-color:rgb(204, 6, 6);
   padding: 16px;
   border-radius: 8px;
   color: ${({ theme }) => theme.text};
   margin-bottom: 24px;
 `;
 
+const ContentFlexContainer = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  gap: 60px;
+  align-items: flex-start;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 20px;
+  }
+`;
+
+const Select = styled.select`
+  padding: 1rem;
+  border: 1px solid #ccc;
+    background-color: ${({ theme }) => theme.background};
+      color: ${({ theme }) => theme.text};
+  border-radius: 6px;
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  width: 100%;
+    &:focus {
+    outline: none;
+    border-color: #2563eb; 
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.3);
+  }
+`;
+
+const Input = styled.input`
+  padding: 1rem;
+  border: 1px solid #ccc;
+    background-color: ${({ theme }) => theme.background};
+    color: ${({ theme }) => theme.text};
+  border-radius: 6px;
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  width: 95%;
+    &:focus {
+    outline: none;
+    border-color: #2563eb; /* Blue */
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.3);
+  }
+`;
+
 
 const BlogList = () => {
   const dispatch = useDispatch();
-  const { blogs, totalPages, loading, error } = useSelector((state) => state.blogs);
+  const { blogs: allBlogs, totalPages, loading, error } = useSelector((state) => state.blogs);
   const [page, setPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('');
+
+  
+  const fetchBlogs = () => {
+    dispatch(fetchPaginatedBlogs({ page, limit: 5, searchTerm, categoryFilter }));
+  };
 
   useEffect(() => {
-    dispatch(fetchPaginatedBlogs({ page, limit: 5 }));
-  }, [dispatch, page]);
+    fetchBlogs();
+  }, [dispatch, page, searchTerm, categoryFilter]); 
 
   const handleNextPage = () => {
     if (page < totalPages) setPage(page + 1);
@@ -176,22 +227,60 @@ const BlogList = () => {
     if (page > 1) setPage(page - 1);
   };
 
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value); 
+    setPage(1); 
+  };
+
+  const handleCategoryChange = (e) => {
+    setCategoryFilter(e.target.value); 
+    setPage(1); 
+  };
+
+  
+  const filteredBlogs = allBlogs.filter((blog) => {
+    const matchesSearchTerm =
+      blog.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      blog.tags.some((tag) => tag.toLowerCase().includes(searchTerm.toLowerCase()));
+
+    const matchesCategoryFilter = categoryFilter ? blog.category === categoryFilter : true;
+
+    return matchesSearchTerm && matchesCategoryFilter;
+  });
+
   return (
     <BlogListWrapper>
       <Title>Blogs</Title>
+
+      
+      <ContentFlexContainer>
+        <Input
+          type="text"
+          placeholder="Search by title or tags..."
+          value={searchTerm}
+          onChange={handleSearchChange}
+        />
+        <Select value={categoryFilter} onChange={handleCategoryChange}>
+          <option value="">Select Category</option>
+          <option value="Scientific">Scientific</option>
+          <option value="IT">IT</option>
+        </Select>
+        
+      </ContentFlexContainer>
+      
       {loading ? (
         <LoadingMessage>Loading blogs...</LoadingMessage>
       ) : error ? (
         <ErrorMessage>Error: {error}</ErrorMessage>
-      ) : blogs.length === 0 ? (
+      ) : filteredBlogs.length === 0 ? (
         <NoBlogsMessage>No blogs available.</NoBlogsMessage>
       ) : (
         <BlogGrid>
-          {blogs.map((blog) => (
+          {filteredBlogs.map((blog) => (
             <BlogItem key={blog._id}>
               {blog.image && <BlogImage src={`http://localhost:6505${blog.image}`} alt={blog.title} />}
               <BlogContent>
-                  <SectionTitle >{blog.title}</SectionTitle>
+                <SectionTitle>{blog.title}</SectionTitle>
                 <PublishedDate>
                   <span style={{ color: '#ec4899', fontWeight: 'bold' }}>Published on : </span>{new Date(blog.createdAt).toLocaleDateString()}
                 </PublishedDate>
@@ -201,8 +290,6 @@ const BlogList = () => {
                 <BlogInfo>
                   <span style={{ color: '#ec4899', fontWeight: 'bold' }}>Category:</span> {blog.category}
                 </BlogInfo>
-              
-                
                 <BlogLink to={`/blogs/${blog._id}`}>View Details</BlogLink>
               </BlogContent>
             </BlogItem>

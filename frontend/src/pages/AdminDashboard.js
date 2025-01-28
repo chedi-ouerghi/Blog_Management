@@ -6,22 +6,33 @@ import { fetchBlogs, approveBlog, rejectBlog, deleteBlog } from '../features/blo
 
 const DashboardContainer = styled.div`
   display: flex;
-  padding: 2rem;
+  flex-direction: column;
+  padding: 1rem;
   font-family: 'Roboto', sans-serif;
   color: ${({ theme }) => theme.text};
   background-color: ${({ theme }) => theme.background};
-  height: 75vh;
-  overflow-y: hidden;
+  height: auto;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    height: 75vh;
+  }
 `;
 
 const Sidebar = styled.div`
-  width: 230px;
+  width: 100%;
   background-color: ${({ theme }) => theme.background};
   padding: 1rem;
-  border-right: 1px solid #ddd;
-  margin-right: 1rem;
+  border-right: none;
+  margin-bottom: 1rem;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
+
+  @media (min-width: 768px) {
+    width: 230px;
+    margin-right: 1rem;
+    border-right: 1px solid #ddd;
+  }
 `;
 
 const SidebarTitle = styled.h2`
@@ -31,21 +42,25 @@ const SidebarTitle = styled.h2`
 `;
 
 const SidebarField = styled.p`
-    margin-bottom: 0.5rem;
-    font-size: 1rem;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
   color: ${({ theme }) => theme.text};
-    padding: 10px;
-    box-shadow: 1px 1px 2px;
-    font-style: italic;
-    font-weight: 600;
+  padding: 10px;
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+  font-style: italic;
+  font-weight: 600;
 `;
 
 const Title = styled.h1`
-  font-size: 2rem;
+  font-size: 1.8rem;
   margin-bottom: 1.5rem;
   text-align: center;
   color: ${({ theme }) => theme.text};
   font-weight: bold;
+
+  @media (min-width: 768px) {
+    font-size: 2rem;
+  }
 `;
 
 const Table = styled.table`
@@ -66,23 +81,24 @@ const TableHeader = styled.thead`
     font-weight: bold;
     border-bottom: 2px solid #ddd;
     border-top: 2px solid #ddd;
-  ${'' /* color:#000 */}
+    font-size: 0.9rem;
+
+    @media (min-width: 768px) {
+      font-size: 1rem;
+    }
   }
 `;
 
 const TableRow = styled.tr`
   &:nth-child(even) {
-  background-color: ${({ theme }) => theme.background};
-   color:#000
+    background-color: ${({ theme }) => theme.background};
   }
 
   &:hover {
-  background-color: ${({ theme }) => theme.background};
+    background-color: ${({ theme }) => theme.background};
     transition: background-color 0.3s ease;
-    color:pink;
-    cursor:pointer;
-        border: 2px solid #ddd;
-
+    cursor: pointer;
+    border: 2px solid #ddd;
   }
 `;
 
@@ -90,24 +106,36 @@ const TableCell = styled.td`
   padding: 0.75rem;
   border-bottom: 1px solid #ddd;
   color: ${({ theme }) => theme.text};
+  font-size: 0.85rem;
+
+  @media (min-width: 768px) {
+    font-size: 1rem;
+  }
 `;
 
 const ActionButton = styled.button`
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.8rem;
   margin-right: 0.5rem;
   background-color: ${(props) =>
-    props.variant === 'approve' ? '#4caf50' :
-    props.variant === 'reject' ? '#f44336' :
-    '#ff9800'};
+    props.variant === 'approve'
+      ? '#4caf50'
+      : props.variant === 'reject'
+      ? '#f44336'
+      : '#ff9800'};
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   transition: opacity 0.3s ease;
 
   &:hover {
     opacity: 0.9;
+  }
+
+  @media (min-width: 768px) {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
   }
 `;
 
@@ -117,7 +145,6 @@ const LoadingMessage = styled.div`
   margin-top: 2rem;
   color: ${({ theme }) => theme.text};
 `;
-
 
 function AdminDashboard() {
   const dispatch = useDispatch();

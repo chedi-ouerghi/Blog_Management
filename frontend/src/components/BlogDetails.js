@@ -146,29 +146,44 @@ const Container = styled.div`
   margin: 25px auto;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border:1px solid #fff
+  border: 1px solid #fff;
+
+  @media (max-width: 768px) {
+    padding: 20px;
+    margin: 10px;
+  }
 `;
 
 const ContentHeaderSection = styled.div`
   display: flex;
-  justify-content:space-between;
+  justify-content: space-between;
   gap: 30px;
-   align-items: center;
+  align-items: center;
 
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 `;
 
 const Title = styled.h2`
   font-size: 2.8rem;
   font-weight: 700;
   color: ${({ theme }) => theme.primary};
-  ${'' /* margin-bottom: 20px; */}
-  ${'' /* text-align: center; */}
+
+  @media (max-width: 768px) {
+    font-size: 2rem;
+  }
 `;
 
 const BlogContentContainer = styled.div`
   display: flex;
   gap: 30px;
   margin-top: 20px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 
 const BlogImage = styled.img`
@@ -176,6 +191,11 @@ const BlogImage = styled.img`
   height: 500px;
   object-fit: contain;
   border-radius: 8px;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    height: auto;
+  }
 `;
 
 const ContentSection = styled.div`
@@ -184,8 +204,16 @@ const ContentSection = styled.div`
   flex: 1;
 `;
 
-const Section = styled.div`
-  margin-top: 30px;
+const ContentFlexContainer = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  gap: 60px;
+  align-items: flex-start;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 20px;
+  }
 `;
 
 const SectionTitle = styled.h3`
@@ -193,6 +221,10 @@ const SectionTitle = styled.h3`
   font-weight: 600;
   color: ${({ theme }) => theme.secondary};
   margin-bottom: 12px;
+
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+  }
 `;
 
 const ContentContainer = styled.div`
@@ -202,56 +234,31 @@ const ContentContainer = styled.div`
   border-radius: 8px;
   border: 1px solid #e2e8f0;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-`;
 
-
-const ContentFlexContainer = styled.div`
-display: flex
-;
-    justify-content: flex-start;
-    gap: 60px;
-    align-items: flex-start;
-
-`;
-
-
-const Category = styled.p`
-    font-size: 1.2rem;
-  color: ${({ theme }) => theme.text};
-    text-decoration: underline;
-    cursor: pointer;
-    text-decoration-style: inherit;
+  @media (max-width: 768px) {
+    padding: 15px;
+  }
 `;
 
 const TagsList = styled.ul`
-        display: flex
-;
-    flex-direction: column;
-    margin: 0 -15px;
-`;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 
-const Tag = styled.li`
-  background-color: ${({ theme }) => theme.tagBackground};
-  color: ${({ theme }) => theme.tagColor};
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 1rem;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-
-`;
-
-const DateText = styled.p`
-  font-size: 1.1rem;
-  color: ${({ theme }) => theme.text};
-  ${'' /* margin-top: 8px; */}
-  position:relative;
-  right:10px;
+  @media (max-width: 768px) {
+    justify-content: center;
+  }
 `;
 
 const ButtonGroup = styled.div`
   display: flex;
   gap: 20px;
   margin-top: 30px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+  }
 `;
 
 const Button = styled.button`
@@ -265,15 +272,15 @@ const Button = styled.button`
   &:hover {
     opacity: 0.8;
   }
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `;
 
 const SaveButton = styled(Button)`
   background-color: ${({ theme }) => theme.primary};
-  color: white;
-
-  &:hover {
-    background-color: ${({ theme }) => theme.primaryDark};
-  }
+  color: blue;
 `;
 
 const EditButton = styled(Button)`
@@ -293,7 +300,6 @@ const DeleteButton = styled(Button)`
     background-color: #c53030;
   }
 `;
-
 const Loading = styled.div`
   text-align: center;
   font-size: 1.5rem;
@@ -310,4 +316,30 @@ const NoBlog = styled.div`
   text-align: center;
   font-size: 1.5rem;
   color: ${({ theme }) => theme.secondary};
+`;
+const DateText = styled.p `
+  font-size: 1.1rem;
+  color: ${({ theme }) => theme.text};
+  ${'' /* margin-top: 8px; */}
+  position:relative;
+  right:10px;
+`;
+const Tag = styled.li`
+  background-color: ${({ theme }) => theme.tagBackground};
+  color: ${({ theme }) => theme.tagColor};
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+
+`;
+const Category = styled.p`
+    font-size: 1.2rem;
+  color: ${({ theme }) => theme.text};
+    text-decoration: underline;
+    cursor: pointer;
+    text-decoration-style: inherit;
+`;
+const Section = styled.div`
+  margin-top: 30px;
 `;

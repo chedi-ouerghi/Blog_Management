@@ -5,12 +5,17 @@ import { createBlog } from '../features/blogs/blogSlice';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify'; 
 
+
+
+
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 5rem;
+  overflow-y: auto;
   height: 100vh;
   background-color: ${({ theme }) => theme.background};
 `;
@@ -127,11 +132,39 @@ const CreateBlog = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+   const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const fileName = file.name;
+      
+      const fileExtension = fileName.split('.').pop().toLowerCase();
+
+      
+      const validExtensions = ['jpeg', 'png'];
+      if (validExtensions.includes(fileExtension)) {
+        setImage(file);
+        setImagePreview(URL.createObjectURL(file));
+        toast.success('Image validée avec succès!');
+      } else {
+        toast.error('Please upload a valid image in JPEG or PNG format.');
+        e.target.value = null; 
+        setImage(null); 
+        setImagePreview(null); 
+      }
+    }
+  };
+
 const handleSubmit = (e) => {
   e.preventDefault();
 
+  
+  if (!image) {
+    toast.error('Please upload an image before submitting.');
+    return;
+  }
+
   if (!userId) {
-    alert('User is not logged in!');
+    toast.error('User is not logged in!');
     return;
   }
 
@@ -145,33 +178,17 @@ const handleSubmit = (e) => {
 
   formData.append('status', status);
   formData.append('user', userId);
+  formData.append('image', image);
 
-  if (image) {
-    formData.append('image', image);
-  } else {
-    alert('Please upload an image before submitting.');
-    return;
-  }
-
-  
   setIsSubmitting(true);
 
-  
   dispatch(createBlog(formData))
     .unwrap()
     .then((response) => {
-      
-      toast.success(response.message || 'Blog created successfully et est en attente d\'approbation de l\'administrateur.');
-
-      
-      setTimeout(() => {
-        navigate('/');
-      }, 3005); 
-
-      
+      toast.success(response.message || 'Blog created successfully and is pending administrator approval.');
+      setTimeout(() => navigate('/'), 3005); 
     })
     .catch((err) => {
-      console.error('Error creating blog:', err);
       toast.error('An error occurred. Please try again.');
       setIsSubmitting(false); 
     });
@@ -199,21 +216,11 @@ const handleSubmit = (e) => {
             <option value="IT">IT</option>
           </Select>
 
-          <Input
-            type="file"
-            accept="image/jpeg, image/png"
-            onChange={(e) => {
-              const file = e.target.files[0];
-              if (file && (file.type === 'image/jpeg' || file.type === 'image/png')) {
-                setImage(file);
-                setImagePreview(URL.createObjectURL(file));
-              } else {
-                alert('Please upload a valid image (JPEG or PNG).');
-                setImage(null);
-                setImagePreview(null);
-              }
-            }}
-          />
+  <Input
+        type="file"
+        accept="image/jpeg, image/png"
+        onChange={handleImageChange}
+      />
 
           {imagePreview && <ImagePreview src={imagePreview} alt="Preview" />}
 
