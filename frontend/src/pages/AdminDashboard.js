@@ -7,11 +7,11 @@ import { fetchBlogs, approveBlog, rejectBlog, deleteBlog } from '../features/blo
 const DashboardContainer = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 1rem;
+  padding: 3rem;
   font-family: 'Roboto', sans-serif;
   color: ${({ theme }) => theme.text};
   background-color: ${({ theme }) => theme.background};
-  height: auto;
+  height: 100%;
 
   @media (min-width: 768px) {
     flex-direction: row;
